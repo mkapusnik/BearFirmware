@@ -43,7 +43,12 @@
  *------------------------------------*/
 
 // Steps per unit {X,Y,Z,E}
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {200,200,3200/8,141.5}
+#define DEFAULT_X_STEPS_PER_UNIT 200
+#define DEFAULT_Y_STEPS_PER_UNIT 200
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {DEFAULT_X_STEPS_PER_UNIT,DEFAULT_Y_STEPS_PER_UNIT,3200/8,141.5}
+
+//#define STEPPER_09_X_AXIS
+//#define STEPPER_09_Y_AXIS
 
 // Endstop inverting
 #define X_MIN_ENDSTOP_INVERTING 0 // set to 1 to invert the logic of the endstop.
@@ -68,7 +73,7 @@
 #define X_MIN_POS 0
 #define Y_MAX_POS 210
 #define Y_MIN_POS -4
-#define Z_MAX_POS 208.5
+#define Z_MAX_POS 210
 #define Z_MIN_POS 0.15
 
 // Uncomment Z_MAX_POS_XYZ_CALIBRATION_CORRECTION define for using the MK3S and MK2.5S firmware 

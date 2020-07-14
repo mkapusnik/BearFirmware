@@ -15,7 +15,7 @@ extern "C" {
 typedef uint8_t (*sm4_stop_cb_t)();
 
 // callback prototype for updating position counters
-typedef void (*sm4_update_pos_cb_t)(uint16_t dx, uint16_t dy, uint16_t dz, uint16_t de);
+typedef void (*sm4_update_pos_cb_t)(uint16_t dx, uint16_t dy, uint16_t dz);
 
 // callback prototype for calculating delay
 typedef uint16_t (*sm4_calc_delay_cb_t)(uint16_t nd, uint16_t dd);
@@ -47,7 +47,7 @@ extern void sm4_set_dir_bits(uint8_t dir_bits);
 extern void sm4_do_step(uint8_t axes_mask);
 
 // xyze linear-interpolated relative move, returns remaining diagonal steps (>0 means stoped)
-extern uint16_t sm4_line_xyze_ui(uint16_t dx, uint16_t dy, uint16_t dz, uint16_t de);
+extern uint16_t sm4_line_xyze_ui(uint16_t dx, uint16_t dy, uint16_t dz);
 
 
 #if defined(__cplusplus)

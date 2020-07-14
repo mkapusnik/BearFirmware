@@ -4,6 +4,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <math.h>
+#include <stdio.h>
 #include "Arduino.h"
 
 #include "boards.h"
@@ -14,6 +15,8 @@
 
 #ifdef NEW_XYZCAL
 
+#define DBG(args...) printf_P(args)
+#define _n PSTR
 
 // Signal pinouts
 
@@ -144,18 +147,21 @@ void sm4_do_step(uint8_t axes_mask)
 #endif //((MOTHERBOARD == BOARD_RAMBO_MINI_1_0) || (MOTHERBOARD == BOARD_RAMBO_MINI_1_3) || (MOTHERBOARD == BOARD_EINSY_1_0a))
 }
 
-uint16_t sm4_line_xyze_ui(uint16_t dx, uint16_t dy, uint16_t dz, uint16_t de)
+uint16_t sm4_line_xyze_ui(uint16_t dx, uint16_t dy, uint16_t dz)
 {
-	uint16_t dd = (uint16_t)(sqrt((float)(((uint32_t)dx)*dx + ((uint32_t)dy*dy) + ((uint32_t)dz*dz) + ((uint32_t)de*de))) + 0.5);
+	uint8_t x_steps = DEFAULT_X_STEPS_PER_UNIT / 100;
+	uint8_t y_steps = DEFAULT_Y_STEPS_PER_UNIT / 100;
+
+	dx *= x_steps;
+	dy *= y_steps;
+	uint16_t dd = (uint16_t)(sqrt((float)(((uint32_t)dx*dx) + ((uint32_t)dy*dy) + ((uint32_t)dz*dz))) + 0.5);
 	uint16_t nd = dd;
 	uint16_t cx = dd;
 	uint16_t cy = dd;
 	uint16_t cz = dd;
-	uint16_t ce = dd;
 	uint16_t x = 0;
 	uint16_t y = 0;
 	uint16_t z = 0;
-	uint16_t e = 0;
 	while (nd)
 	{
 		if (sm4_stop_cb && (*sm4_stop_cb)()) break;
@@ -178,25 +184,17 @@ uint16_t sm4_line_xyze_ui(uint16_t dx, uint16_t dy, uint16_t dz, uint16_t de)
 			cz += dd;
 			z++;
 		}
-		if (ce <= de)
-		{
-			sm |= 4;
-			ce += dd;
-			e++;
-		}
 		cx -= dx;
 		cy -= dy;
 		cz -= dz;
-		ce -= de;
 		sm4_do_step(sm);
 		uint16_t delay = SM4_DEFDELAY;
 		if (sm4_calc_delay_cb) delay = (*sm4_calc_delay_cb)(nd, dd);
 		if (delay) delayMicroseconds(delay);
 		nd--;
 	}
-	if (sm4_update_pos_cb) (*sm4_update_pos_cb)(x, y, z, e);
+	if (sm4_update_pos_cb) (*sm4_update_pos_cb)(x, y, z);
 	return nd;
 }
-
 
 #endif //NEW_XYZCAL
