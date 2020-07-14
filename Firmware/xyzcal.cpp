@@ -755,7 +755,7 @@ bool xyzcal_scan_and_process(void)
 	int16_t z = _Z;
 
 	uint8_t* pixels = (uint8_t*)block_buffer;
-	xyzcal_scan_pixels_32x32(x, y, z - 72, 2400, 400, pixels);
+	xyzcal_scan_pixels_32x32(x, y, z - 72, 2400, 200, pixels);
 
 	uint16_t* histo = (uint16_t*)(pixels + 32*32);
 	xyzcal_histo_pixels_32x32(pixels, histo);
