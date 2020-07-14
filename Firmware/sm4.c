@@ -4,7 +4,6 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <math.h>
-#include <stdio.h>
 #include "Arduino.h"
 
 #include "boards.h"
@@ -15,8 +14,6 @@
 
 #ifdef NEW_XYZCAL
 
-#define DBG(args...) printf_P(args)
-#define _n PSTR
 
 // Signal pinouts
 
