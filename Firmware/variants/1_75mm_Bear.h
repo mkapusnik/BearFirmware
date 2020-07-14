@@ -43,12 +43,10 @@
  *------------------------------------*/
 
 // Steps per unit {X,Y,Z,E}
-#define DEFAULT_X_STEPS_PER_UNIT 200
-#define DEFAULT_Y_STEPS_PER_UNIT 200
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {DEFAULT_X_STEPS_PER_UNIT,DEFAULT_Y_STEPS_PER_UNIT,3200/8,141.5}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {200,200,3200/8,141.5}
 
-//#define STEPPER_09_X_AXIS
-//#define STEPPER_09_Y_AXIS
+#define STEPPER_09_X_AXIS
+#define STEPPER_09_Y_AXIS
 
 // Endstop inverting
 #define X_MIN_ENDSTOP_INVERTING 0 // set to 1 to invert the logic of the endstop.

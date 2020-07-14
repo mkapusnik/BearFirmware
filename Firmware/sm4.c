@@ -149,11 +149,13 @@ void sm4_do_step(uint8_t axes_mask)
 
 uint16_t sm4_line_xyze_ui(uint16_t dx, uint16_t dy, uint16_t dz)
 {
-	uint8_t x_steps = DEFAULT_X_STEPS_PER_UNIT / 100;
-	uint8_t y_steps = DEFAULT_Y_STEPS_PER_UNIT / 100;
-
-	dx *= x_steps;
-	dy *= y_steps;
+	#ifdef STEPPER_09_X_AXIS
+		dx *= 2;
+	#endif
+	#ifdef STEPPER_09_Y_AXIS
+		dy *= 2;
+	#endif
+	
 	uint16_t dd = (uint16_t)(sqrt((float)(((uint32_t)dx*dx) + ((uint32_t)dy*dy) + ((uint32_t)dz*dz))) + 0.5);
 	uint16_t nd = dd;
 	uint16_t cx = dd;

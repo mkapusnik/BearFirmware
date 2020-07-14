@@ -25,8 +25,18 @@
 #define _n PSTR
 #endif //_n
 
-#define _X (int16_t) (count_position[X_AXIS] / (DEFAULT_X_STEPS_PER_UNIT / 100 ))
-#define _Y (int16_t) (count_position[Y_AXIS] / (DEFAULT_Y_STEPS_PER_UNIT / 100 ))
+#ifdef STEPPER_09_X_AXIS
+	#define _X (int16_t) (count_position[X_AXIS] / 2)
+#else
+	#define _X (int16_t) (count_position[X_AXIS])
+#endif
+
+#ifdef STEPPER_09_Y_AXIS
+	#define _Y (int16_t) (count_position[Y_AXIS] / 2)
+#else
+	#define _Y (int16_t) (count_position[Y_AXIS])
+#endif
+
 #define _Z ((int16_t)count_position[Z_AXIS])
 #define _E ((int16_t)count_position[E_AXIS])
 
@@ -327,10 +337,12 @@ void xyzcal_scan_pixels_32x32(int16_t cx, int16_t cy, int16_t min_z, int16_t max
 						z++;
 					}
 				}
-				for (uint8_t step = 0; step < (DEFAULT_X_STEPS_PER_UNIT / 100); step++) {
+				sm4_do_step(X_AXIS_MASK);
+				delayMicroseconds(600);
+				#ifdef STEPPER_09_X_AXIS
 					sm4_do_step(X_AXIS_MASK);
 					delayMicroseconds(600);
-				}
+				#endif
 //				_pinda = pinda;
 			}
 			sum >>= 6; //div 64
@@ -344,7 +356,12 @@ void xyzcal_scan_pixels_32x32(int16_t cx, int16_t cy, int16_t min_z, int16_t max
 				z_sum >>= 6; //div 64
 			if (pixels) pixels[((uint16_t)r<<5) + ((r&1)?(31-c):c)] = sum;
 //			DBG(_n("c=%d r=%d l=%d z=%d\n"), c, r, sum, z_sum);
-			count_position[0] += (((r&1)?-64:64) * (DEFAULT_X_STEPS_PER_UNIT / 100 ));
+			#ifdef STEPPER_09_X_AXIS
+				count_position[0] += (((r&1)?-64:64) * 2);
+			#else
+				count_position[0] += ((r&1)?-64:64);
+			#endif
+			
 			count_position[2] = z;
 		}
 		if (pixels)
