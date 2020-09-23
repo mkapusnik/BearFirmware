@@ -130,11 +130,11 @@ if [ -z "$1" ]; then set 'all'; fi
 if [ "$1" = "all" ]; then
  generate_binary 'en'
  generate_binary 'cz'
- generate_binary 'de'
- generate_binary 'es'
- generate_binary 'fr'
- generate_binary 'it'
- generate_binary 'pl'
+# generate_binary 'de'
+# generate_binary 'es'
+# generate_binary 'fr'
+# generate_binary 'it'
+# generate_binary 'pl'
 else
  generate_binary $1
 fi

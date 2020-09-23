@@ -19,7 +19,7 @@
 #define DEVELOPER
 
 // Printer name
-#define CUSTOM_MENDEL_NAME "Prusa i3 MK2.5S BEAR"
+#define CUSTOM_MENDEL_NAME "BEARuska"
 
 // WEH002004 OLED Display uncomment WEH002004_OLED if have this kind of display
 #define WEH002004_OLED
@@ -43,7 +43,9 @@
  *------------------------------------*/
 
 // Steps per unit {X,Y,Z,E}
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,3200/8,133}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {200,200,3200/8,490}
+#define STEPPER_09_X_AXIS
+#define STEPPER_09_Y_AXIS
 
 // Endstop inverting
 #define X_MIN_ENDSTOP_INVERTING 0 // set to 1 to invert the logic of the endstop.
@@ -211,9 +213,9 @@
 //#define  DEFAULT_Kp 40.925
 //#define  DEFAULT_Ki 4.875
 //#define  DEFAULT_Kd 86.085
-#define  DEFAULT_Kp 16.13
-#define  DEFAULT_Ki 1.1625
-#define  DEFAULT_Kd 56.23
+#define  DEFAULT_Kp 36.55
+#define  DEFAULT_Ki 3.66
+#define  DEFAULT_Kd 91.26
 #endif
 
 // Extrude mintemp
@@ -296,7 +298,7 @@
 // Motor Current settings for RAMBo mini PWM value = MotorCurrentSetting * 255 / range
 #if MOTHERBOARD == BOARD_RAMBO_MINI_1_0 || MOTHERBOARD == BOARD_RAMBO_MINI_1_3
 #define MOTOR_CURRENT_PWM_RANGE 2000
-#define DEFAULT_PWM_MOTOR_CURRENT  {270, 830, 450} // {XY,Z,E}
+#define DEFAULT_PWM_MOTOR_CURRENT  {300, 830, 500} // {XY,Z,E}
 #define DEFAULT_PWM_MOTOR_CURRENT_LOUD  {540, 830, 500} // {XY,Z,E}
 #define Z_SILENT 0
 #define Z_HIGH_POWER 200
@@ -371,9 +373,9 @@
 #define  DEFAULT_bedKi 1.60
 #define  DEFAULT_bedKd 73.76
 #else
-#define  DEFAULT_bedKp 126.13
-#define  DEFAULT_bedKi 4.30
-#define  DEFAULT_bedKd 924.76
+#define  DEFAULT_bedKp 172.71
+#define  DEFAULT_bedKi 9.11
+#define  DEFAULT_bedKd 818.26
 #endif
 
 //120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)

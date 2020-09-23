@@ -416,7 +416,7 @@
 
 #MSG_HEATING_COMPLETE c=20
 "Heating done."
-"Zahrivani OK."
+"Zahrivani OK"
 
 #MSG_HEATING
 "Heating"
