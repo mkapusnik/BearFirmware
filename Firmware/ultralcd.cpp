@@ -8020,7 +8020,22 @@ static bool lcd_selfcheck_axis(int _axis, int _travel)
 	}
 
 	do {
-		current_position[_axis] = current_position[_axis] - 1;
+		
+		if (_axis == X_AXIS) {
+			#ifdef STEPPER_09_X_AXIS
+				current_position[_axis] = current_position[_axis] - 2;
+			#else
+				current_position[_axis] = current_position[_axis] - 1;
+			#endif		
+		} else if (_axis == Y_AXIS) {
+			#ifdef STEPPER_09_Y_AXIS
+				current_position[_axis] = current_position[_axis] - 2;
+			#else
+				current_position[_axis] = current_position[_axis] - 1;
+			#endif		
+		} else {
+			current_position[_axis] = current_position[_axis] - 1;
+		}
 
 		plan_buffer_line_curposXYZE(manual_feedrate[0] / 60);
 		st_synchronize();

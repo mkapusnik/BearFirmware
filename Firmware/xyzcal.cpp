@@ -25,8 +25,17 @@
 #define _n PSTR
 #endif //_n
 
-#define _X ((int16_t)count_position[X_AXIS])
-#define _Y ((int16_t)count_position[Y_AXIS])
+#ifdef STEPPER_09_X_AXIS
+	#define _X (int16_t) (count_position[X_AXIS] / 2)
+#else
+	#define _X (int16_t) (count_position[X_AXIS])
+#endif
+
+#ifdef STEPPER_09_Y_AXIS
+	#define _Y (int16_t) (count_position[Y_AXIS] / 2)
+#else
+	#define _Y (int16_t) (count_position[Y_AXIS])
+#endif
 #define _Z ((int16_t)count_position[Z_AXIS])
 #define _E ((int16_t)count_position[E_AXIS])
 
@@ -91,7 +100,7 @@ void xyzcal_update_pos(uint16_t dx, uint16_t dy, uint16_t dz, uint16_t)
 	if (xyzcal_dm&1) count_position[0] -= dx; else count_position[0] += dx;
 	if (xyzcal_dm&2) count_position[1] -= dy; else count_position[1] += dy;
 	if (xyzcal_dm&4) count_position[2] -= dz; else count_position[2] += dz;
-//	DBG(_n(" after xyzcal_update_pos x=%ld y=%ld z=%ld\n"), count_position[0], count_position[1], count_position[2]);
+//	DBG(_n(" after xyzcal_update_pos x=%ld y=%ld z=%ld\n"), _X, _Y, _Z);
 }
 
 uint16_t xyzcal_sm4_delay = 0;
@@ -145,9 +154,9 @@ uint16_t xyzcal_calc_delay(uint16_t, uint16_t)
 bool xyzcal_lineXYZ_to(int16_t x, int16_t y, int16_t z, uint16_t delay_us, int8_t check_pinda)
 {
 //	DBG(_n("xyzcal_lineXYZ_to x=%d y=%d z=%d  check=%d\n"), x, y, z, check_pinda);
-	x -= (int16_t)count_position[0];
-	y -= (int16_t)count_position[1];
-	z -= (int16_t)count_position[2];
+	x -= _X;
+	y -= _Y;
+	z -= _Z;
 	xyzcal_dm = ((x<0)?1:0) | ((y<0)?2:0) | ((z<0)?4:0);
 	sm4_set_dir_bits(xyzcal_dm);
 	sm4_stop_cb = check_pinda?((check_pinda<0)?check_pinda_0:check_pinda_1):0;
@@ -281,7 +290,7 @@ void xyzcal_scan_pixels_32x32(int16_t cx, int16_t cy, int16_t min_z, int16_t max
 	DBG(_n("xyzcal_scan_pixels_32x32 cx=%d cy=%d min_z=%d max_z=%d\n"), cx, cy, min_z, max_z);
 //	xyzcal_lineXYZ_to(cx - 1024, cy - 1024, max_z, 2*delay_us, 0);
 //	xyzcal_lineXYZ_to(cx, cy, max_z, delay_us, 0);
-	int16_t z = (int16_t)count_position[2];
+	int16_t z = _Z;
 	xyzcal_lineXYZ_to(cx, cy, z, 2*delay_us, 0);
 	for (uint8_t r = 0; r < 32; r++)
 	{
@@ -289,7 +298,7 @@ void xyzcal_scan_pixels_32x32(int16_t cx, int16_t cy, int16_t min_z, int16_t max
 		xyzcal_lineXYZ_to((r&1)?(cx+1024):(cx-1024), cy - 1024 + r*64, z, 2*delay_us, 0);
 		xyzcal_lineXYZ_to(_X, _Y, min_z, delay_us, 1);
 		xyzcal_lineXYZ_to(_X, _Y, max_z, delay_us, -1);
-		z = (int16_t)count_position[2];
+		z = _Z;
 		sm4_set_dir(X_AXIS, (r&1)?1:0);
 		for (uint8_t c = 0; c < 32; c++)
 		{
@@ -330,6 +339,10 @@ void xyzcal_scan_pixels_32x32(int16_t cx, int16_t cy, int16_t min_z, int16_t max
 				}
 				sm4_do_step(X_AXIS_MASK);
 				delayMicroseconds(600);
+				#ifdef STEPPER_09_X_AXIS
+					sm4_do_step(X_AXIS_MASK);
+					delayMicroseconds(600);
+				#endif
 //				_pinda = pinda;
 			}
 			sum >>= 6; //div 64
@@ -343,7 +356,11 @@ void xyzcal_scan_pixels_32x32(int16_t cx, int16_t cy, int16_t min_z, int16_t max
 				z_sum >>= 6; //div 64
 			if (pixels) pixels[((uint16_t)r<<5) + ((r&1)?(31-c):c)] = sum;
 //			DBG(_n("c=%d r=%d l=%d z=%d\n"), c, r, sum, z_sum);
-			count_position[0] += (r&1)?-64:64;
+			#ifdef STEPPER_09_X_AXIS
+				count_position[0] += (((r&1)?-64:64) * 2);
+			#else
+				count_position[0] += ((r&1)?-64:64);
+			#endif
 			count_position[2] = z;
 		}
 		if (pixels)
@@ -700,7 +717,7 @@ const uint16_t xyzcal_point_pattern[12] PROGMEM = {0x000, 0x0f0, 0x1f8, 0x3fc, 0
 
 bool xyzcal_searchZ(void)
 {
-	DBG(_n("xyzcal_searchZ x=%ld y=%ld z=%ld\n"), count_position[X_AXIS], count_position[Y_AXIS], count_position[Z_AXIS]);
+	DBG(_n("xyzcal_searchZ x=%ld y=%ld z=%ld\n"), _X, _Y, _Z);
 	int16_t x0 = _X;
 	int16_t y0 = _Y;
 	int16_t z0 = _Z;
@@ -720,7 +737,7 @@ bool xyzcal_searchZ(void)
 		}
 		z -= 400;
 	}
-	DBG(_n("xyzcal_searchZ no signal\n x=%ld y=%ld z=%ld\n"), count_position[X_AXIS], count_position[Y_AXIS], count_position[Z_AXIS]);
+	DBG(_n("xyzcal_searchZ no signal\n x=%ld y=%ld z=%ld\n"), _X, _Y, _Z);
 	return false;
 }
 
@@ -770,7 +787,7 @@ bool xyzcal_scan_and_process(void)
 
 bool xyzcal_find_bed_induction_sensor_point_xy(void)
 {
-	DBG(_n("xyzcal_find_bed_induction_sensor_point_xy x=%ld y=%ld z=%ld\n"), count_position[X_AXIS], count_position[Y_AXIS], count_position[Z_AXIS]);
+	DBG(_n("xyzcal_find_bed_induction_sensor_point_xy x=%ld y=%ld z=%ld\n"), _X, _Y, _Z);
 	bool ret = false;
 	st_synchronize();
 	int16_t x = _X;

@@ -146,16 +146,21 @@ void sm4_do_step(uint8_t axes_mask)
 
 uint16_t sm4_line_xyze_ui(uint16_t dx, uint16_t dy, uint16_t dz, uint16_t de)
 {
-	uint16_t dd = (uint16_t)(sqrt((float)(((uint32_t)dx)*dx + ((uint32_t)dy*dy) + ((uint32_t)dz*dz) + ((uint32_t)de*de))) + 0.5);
+	#ifdef STEPPER_09_X_AXIS
+		dx *= 2;
+	#endif
+	#ifdef STEPPER_09_Y_AXIS
+		dy *= 2;
+	#endif
+
+	uint16_t dd = (uint16_t)(sqrt((float)(((uint32_t)dx*dx) + ((uint32_t)dy*dy) + ((uint32_t)dz*dz))) + 0.5);
 	uint16_t nd = dd;
 	uint16_t cx = dd;
 	uint16_t cy = dd;
 	uint16_t cz = dd;
-	uint16_t ce = dd;
 	uint16_t x = 0;
 	uint16_t y = 0;
 	uint16_t z = 0;
-	uint16_t e = 0;
 	while (nd)
 	{
 		if (sm4_stop_cb && (*sm4_stop_cb)()) break;
@@ -178,16 +183,9 @@ uint16_t sm4_line_xyze_ui(uint16_t dx, uint16_t dy, uint16_t dz, uint16_t de)
 			cz += dd;
 			z++;
 		}
-		if (ce <= de)
-		{
-			sm |= 4;
-			ce += dd;
-			e++;
-		}
 		cx -= dx;
 		cy -= dy;
 		cz -= dz;
-		ce -= de;
 		sm4_do_step(sm);
 		uint16_t delay = SM4_DEFDELAY;
 		if (sm4_calc_delay_cb) delay = (*sm4_calc_delay_cb)(nd, dd);
