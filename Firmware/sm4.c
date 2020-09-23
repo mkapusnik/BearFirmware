@@ -192,7 +192,7 @@ uint16_t sm4_line_xyze_ui(uint16_t dx, uint16_t dy, uint16_t dz, uint16_t de)
 		if (delay) delayMicroseconds(delay);
 		nd--;
 	}
-	if (sm4_update_pos_cb) (*sm4_update_pos_cb)(x, y, z, e);
+	if (sm4_update_pos_cb) (*sm4_update_pos_cb)(x, y, z, 0);
 	return nd;
 }
 
