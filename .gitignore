@@ -2,6 +2,7 @@
 .settings
 .project
 .cproject
+.idea
 Debug
 Firmware/Configuration_prusa.h
 Firmware/Doc
@@ -50,6 +51,8 @@ Firmware/Doc
 /lang/text.sym
 /lang/textaddr.txt
 /build-env/
+/build/
+/cmake-build-debug/
 /Firmware/Firmware.vcxproj
 /Firmware/Configuration_prusa_bckp.h
 /Firmware/variants/printers.h

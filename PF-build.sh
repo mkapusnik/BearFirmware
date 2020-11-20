@@ -454,10 +454,17 @@ else
 	if [ -f "$SCRIPT_PATH/Firmware/variants/$1" ] ; then 
 		VARIANTS=$1
 	else
-		echo "$(tput setaf 1)$1 could not be found in Firmware/variants please choose a valid one$(tput setaf 2)"
-		ls -1 $SCRIPT_PATH/Firmware/variants/*.h | xargs -n1 basename
-		echo "$(tput sgr0)"
-		exit 21
+    if [[ "$1" == "ALL" ]] ; then
+	    while IFS= read -r -d $'\0' f; do
+		    options[i++]="$f"
+      done < <(find Firmware/variants/ -maxdepth 1 -type f -name "*.h" -print0 )
+      VARIANTS=${options[*]}
+    else
+      echo "$(tput setaf 1)$1 could not be found in Firmware/variants please choose a valid one$(tput setaf 2)"
+      ls -1 $SCRIPT_PATH/Firmware/variants/*.h | xargs -n1 basename
+      echo "$(tput sgr0)"
+      exit 21
+    fi
 	fi
 fi
 

@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  build:
+    build: .
+    working_dir: /app/source
+    volumes:
+      - .:/app/source
+      - ./build:/app/PF-build-hex
+      - environment:/app
+    environment:
+      TERM: dumb
+    command: ./PF-build.sh ${VARIANT-ALL} ${LANGUAGE-ALL} ${LEVEL-GOLD}
+volumes:
+  environment: {}
